@@ -70,6 +70,12 @@ input_prompt = """
    - Sugars: [Grams of sugars]
 ---
 Total Calories: [Sum of all calories]
+Total Protein: [Sum of all Protein]
+Total Carbohydrates: [Sum of all Carbohydrates]
+Total Fats: [Sum of all Fats]
+Total Fiber: [Sum of all Fiber]
+Total Sugars: [Sum of all Sugars]
+
 dont answer i cannot give you exact details give estimated information
 suggest dietary recommendations according to indian cusine in short
 
