@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
 import streamlit as st
 import os
-import pathlib
-import textwrap
+import io
 from PIL import Image
+from google.cloud import vision
 import google.generativeai as genai
 
 # Load environment variables
@@ -16,23 +16,33 @@ if not api_key:
 else:
     genai.configure(api_key=api_key)
 
+# Function to analyze the uploaded image using Google Vision API
+def analyze_image(image_bytes):
+    client = vision.ImageAnnotatorClient()
+    image = vision.Image(content=image_bytes)
+
+    response = client.label_detection(image=image)
+    labels = response.label_annotations
+
+    # Extract labels (e.g., food items)
+    result = [label.description for label in labels]
+
+    if response.error.message:
+        raise Exception(f"{response.error.message}")
+
+    return result
+
 # Function to load the Gemini model and get responses
-def get_gemini_response(input_text, image_data, prompt):
+def get_gemini_response(food_items, prompt):
     model = genai.GenerativeModel("gemini-1.5-flash-latest")
-    response = model.generate_content([input_text, image_data[0], prompt])
+    input_text = "The image contains: " + ", ".join(food_items)
+    response = model.generate_content([input_text, prompt])
     return response.text
 
 # Function to handle image uploads
 def input_image_setup(uploaded_file):
     if uploaded_file is not None:
-        bytes_data = uploaded_file.getvalue()
-        image_parts = [
-            {
-                "mime_type": uploaded_file.type,  # Get the mime type of the uploaded file
-                "data": bytes_data
-            }
-        ]
-        return image_parts
+        return uploaded_file.getvalue()
     else:
         raise FileNotFoundError("No file uploaded")
 
@@ -97,18 +107,26 @@ if uploaded_file is not None:
 
 # Base prompt for the nutritional analysis
 input_prompt = """
-    You are a nutrition expert. Analyze the food items and display each item name along with its nutritional values.
+    You are a nutrition expert. Analyze the food items and display each item's name along with its nutritional values.
 """
 
 # Submit button
 if st.button("Analyze", key="submit", help="Click to analyze the uploaded image"):
     if uploaded_file is not None:
+        # Process the uploaded image
         image_data = input_image_setup(uploaded_file)
-        response = get_gemini_response(input_text, image_data, input_prompt)
-        
-        # Display the response
-        st.markdown("<div class='response-area'><h4>Analysis Result:</h4>", unsafe_allow_html=True)
-        st.write(response)
-        st.markdown("</div>", unsafe_allow_html=True)
+
+        # Analyze the image using Google Vision API
+        try:
+            food_items = analyze_image(image_data)
+            # Pass the extracted food items to Gemini for further analysis
+            response = get_gemini_response(food_items, input_prompt)
+            
+            # Display the response
+            st.markdown("<div class='response-area'><h4>Analysis Result:</h4>", unsafe_allow_html=True)
+            st.write(response)
+            st.markdown("</div>", unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"Error analyzing the image: {str(e)}")
     else:
         st.error("Please upload an image first.")
