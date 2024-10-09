@@ -55,7 +55,7 @@ custom_css = """
 
     /* Response box animation */
     .response-box {
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: black;
         padding: 20px;
         border-radius: 10px;
         margin-top: 20px;
