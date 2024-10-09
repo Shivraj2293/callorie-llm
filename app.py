@@ -18,7 +18,7 @@ custom_css = """
     <style>
     /* Custom background */
     .stApp {
-        background-image: url('https://source.unsplash.com/1600x900/?healthy-food');
+        background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsuLfNImMqWrP3GP8qVt020L4ouK8WZALftZ12_qJURN-Iwz2hHHsgLV0o4b1AouxGWZo&usqp=CAU');
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
