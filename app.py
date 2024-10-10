@@ -59,7 +59,25 @@ if uploaded_file is not None:
 submit=st.button("Tell me about the image")
 
 input_prompt = """
-              You are a nutrition expert. Analyze the food items and display each item Names
+              You are a nutrition expert. Analyze the food items shown in the image and provide a detailed breakdown of their nutritional content. For each food item, list the following information in short:
+
+1. Item Name:
+   - Calories: [Number of calories]
+   - Protein: [Grams of protein]
+   - Carbohydrates: [Grams of carbohydrates]
+   - Fats: [Grams of fats]
+   - Fiber: [Grams of fiber]
+   - Sugars: [Grams of sugars]
+---
+Total Calories: [Sum of all calories]
+Total Protein: [Sum of all Protein]
+Total Carbohydrates: [Sum of all Carbohydrates]
+Total Fats: [Sum of all Fats]
+Total Fiber: [Sum of all Fiber]
+Total Sugars: [Sum of all Sugars]
+
+dont answer i cannot give you exact details give estimated information
+suggest dietary recommendations according to indian cusine in short
 
                """
 
